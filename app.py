@@ -1,220 +1,192 @@
 import streamlit as st
 import plotly.graph_objects as go
-import textwrap
+import pandas as pd
 
-# --- Seiteneinstellungen ---
-st.set_page_config(page_title="Performance vs Pressure", layout="wide")
+# Seiteneinstellungen
+st.set_page_config(page_title="Methodik: Performance vs Pressure", layout="wide")
 
-# --- Datenstruktur der Faktoren ---
-risk_env = ["Sport-specific stressors", "Stigma towards help-seeking", "Lack of social support", "Crisis-type retirement", "Individual/aesthetic sports features"]
-risk_pers = ["Injury and Overtraining", "Poor general health", "Adverse life events", "Risk behavior & ineffective coping", "Female athlete triad", "Poor eating/sleeping/drinking habits", "Chronic life Stress", "Maladaptive personality & identity", "Negative social relationships", "Basic needs & career dissatisfaction"]
+st.title("Performance vs Pressure Modell and its Influence on Well-Being" )
+st.write("Klicke auf eine Athleten-Box, eine Achsenbeschriftung oder die Well-Being-Texte, um die Definition und Beispieleanzuzeigen.")
 
-prot_env = ["MH literacy and support", "Trusting & mastery-orientated climate", "Positive sporting relationships", "Successful retirement adjustment"]
-prot_pers = ["Positive social relationships", "Recovery", "Feeling of competence", "Basic needs & career satisfaction", "Feeling of autonomy", "Protective behavior"]
+# --- 1. Einheitliche Datenstruktur für interaktive Elemente ---
+unified_data = pd.DataFrame({
+    'Id': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    'Type': ['Athlete', 'Athlete', 'Athlete', 'Athlete', 'Athlete', 'Athlete', 'Athlete', 'Axis', 'Axis', 'Axis', 'Axis', 'LegendText', 'LegendText'],
+    'X': [5, 18, 89, 47, 79, 95, 70, 50, 50, -12, 112, 10, 90], 
+    'Y': [88, 15, 95, 55, 38, 57, 10, 105, -5, 50, 50, -21, -21],
+    'Text': ['Hans', 'Sarah', 'mathilde', 'Hans', 'Hans', 'Hans', 'Hans', 'High Pressure', 'Low Pressure', 'Low Performance', 'High Performance', 'High Well-Being', 'Low Well-Being'],
+    'Farbe': ['black', 'black', 'black', 'black', 'black', 'black', 'black', 'black', 'black', 'black', 'black', 'black', 'black'], 
+    'HoverLabel': [
+        'Hans (Oben Links) analysieren', 'Sarah (Unten Links) analysieren', 'mathilde (Oben Rechts) analysieren', 
+        'Hans (Zentrum) analysieren', 'Hans (Flow-Zone) analysieren', 
+        'Hans (Rechte Achse) analysieren', 'Hans (Unten Rechts) analysieren',
+        'Definition: High Pressure', 'Definition: Low Pressure', 
+        'Definition: Low Performance', 'Definition: High Performance',
+        'Definition: High Well-Being', 'Definition: Low Well-Being'
+    ],
+    'Titel': [
+        "Athleten-Profil: Hans (Quadrant A)",
+        "Athleten-Profil: Sarah (Quadrant C)",
+        "Athleten-Profil: mathilde (Quadrant B)",
+        "Athleten-Profil: Hans (Zentraler Übergang)",
+        "Athleten-Profil: Hans (Wohlbefindens-Zone)",
+        "Athleten-Profil: Hans (Leistungs-Fokus)",
+        "Athleten-Profil: Hans (Geringer Druck)",
+        "Dimension: High Pressure (Hoher Druck)",
+        "Dimension: Low Pressure (Tiefer Druck)",
+        "Dimension: Low Performance (Tiefe Leistung)",
+        "Dimension: High Performance (Hohe Leistung)",
+        "Konzept: High Well-Being (Hohes Wohlbefinden)",
+        "Konzept: Low Well-Being (Geringes Wohlbefinden)"
+    ],
+    'Beschreibung': [
+        "**Hans (Top Left):** Befindet sich in einer akuten Überlastungsphase ('Choking under Pressure'). Hoher externer Erwartungsdruck führt zu mentalen Blockaden und beeinträchtigt sein Wohlbefinden massiv.",
+        "**Sarah (Bottom Left):** Erlebt eine Phase der sportlichen Unterforderung oder Resignation. Es fehlt an notwendiger Aktivierung und klaren Zielen, was zu einem niedrigen Wohlbefinden führt.",
+        "**mathilde (Top Right):** Zeigt absolute 'Peak Performance' unter hohem Druck. Sie kann die Aktivierung produktiv nutzen, steht durch die dauerhafte Belastung jedoch nahe an der Erschöpfungsgrenze.",
+        "**Hans (Zentrum):** Befindet sich im neutralen Übergangsbereich des Achsenkreuzes. Weder Belastungsspitzen noch außergewöhnliche Leistungsausschläge sind aktuell sichtbar.",
+        "**Hans (Flow-Zone):** Erlebt maximale Spielfreude und intrinsische Motivation. Hohes Wohlbefinden im geschützten grünen Bereich ermöglicht exzellente, stabile Leistungen.",
+        "**Hans (Far Right):** Liefert punktgenaue Spitzenleistungen ab. Das Vertrauen in die eigenen Fähigkeiten ist extrem hoch, während der Druck im optimalen, kontrollierbaren Bereich bleibt.",
+        "**Hans (Bottom Right):** Trainiert und agiert völlig stressfrei. Das Wohlbefinden ist stabil, die sportliche Leistung befindet sich im absolut soliden, unaufgeregten Bereich.",
+        "**High Pressure:** Externe oder interne Belastungsfaktoren, die eine hohe psychische oder physische Aktivierung vom Athleten fordern (z.B. Wettkampfdruck, Erwartungshaltung).",
+        "**Low Pressure:** Ein Zustand geringer äußerer Reize oder Stressoren. Kann zu Entspannung und Gelassenheit, unter Umständen aber auch zu Unteraktivierung führen.",
+        """**Low Performance (Experten-Zitate & Definitionen):**
 
-all_risks = risk_env + risk_pers
-all_prots = prot_env + prot_pers
+* *“A bad performance would have to actually have mistakes in these plans, in your plan, meaning, I don't know, probably missing a grab early off on the rails, a bad landing, stuff like this.”* (A, p.3)
+* *“But then you need to think if those technical mistakes comes from only a technical part, or if it is because you could not handle the pressure of the competition, for example. So it's not only a technical mistake. The technical mistake would come from not being able to handle the pressure of the competition, for example.”* (A, p.3)
+* *“Eine schlechte Leistung ist für mich einerseits, wenn man nicht realistisch umgehen kann mit den Erwartungen, also mit den Erwartungen. Sprich, man hat jetzt zwei Monate trainiert, man weiss, wo man ist und plötzlich setzt man die Erwartungen viel höher. und man hat das Gefühl, jetzt, bei dem Tag X, er verändert man die Welt neu und hat dadurch eigentlich mehr Druck und Leistung als solches.”* (B, p.4)
+* *“Wenn wirklich das Ganze, was du eben trainiert hast, und das wirklich völlig auseinandergekehrt und absolut völlig, nicht einmal annähernd, dorthin kommst du, wo du eigentlich könntest oder müsstest, also aufgrund von einer Leistung in den letzten zwei Monaten.”* (B, p.4)
+* * silent_wind *“Dass so plötzlich so vielleicht Wind ist, also die äusseren Voraussetzungen ein bisschen schwieriger sind wie normal. Und dass man eigentlich die zum Thema macht, anstatt sich eigentlich auf das konzentriert.”* (B, p.4)
+* *“Auseinanderfallen kann es auch wegen neuem Park, andere Schneebedingungen etc.”*""",
+        """**High Performance (Experten-Zitate & Definitionen):**
 
-# --- Session State Initialisierung (Für automatische Klicks) ---
-for f in all_risks + all_prots:
-    if f not in st.session_state:
-        st.session_state[f] = False
+* *“In general, a good performance is that when you achieve your plan, (…). And if you're able to perform those tricks with a really good execution, the way you planned it, then it's a good performance, (…).”* (A, p.3)
+* *“Eine gute Leistung für mich im Sport ist, wenn ein Athlet oder ein Athlet das am Tag X anrufen kann, was man erwartet hat oder kann erwarten. (…). Und die Erwartungen für mich als Coach ist immer, man sieht ja eigentlich die Athleten über mehrere Wochen, Monate und weiss eigentlich, wo auf welcher Flughöhe oder wo das gerade sind, was das sie gerade können, und wo sie auch regelmässig abrufen können.”*""",
+        "**High Well-Being:** Ein Zustand im Leistungssport, der durch hohe psychische Ressourcen, emotionale Balance, intrinsische Motivation und ein starkes Gefühl der Selbstwirksamkeit gekennzeichnet ist.",
+        "**Low Well-Being:** Ein kritischer Zustand psychischer Erschöpfung oder Überlastung. Häufig ausgelöst durch anhaltenden Stress, Verletzungen oder mangelnde soziale Unterstützung."
+    ]
+})
 
-if "athlete" not in st.session_state:
-    st.session_state.athlete = "Keine Auswahl / Reset"
+athletes = unified_data[unified_data['Type'] == 'Athlete']
+axes = unified_data[unified_data['Type'] == 'Axis']
+legend_texts = unified_data[unified_data['Type'] == 'LegendText']
 
-# Profile für die automatische Checkbox-Auswahl
-athlete_profiles = {
-    "Elena (Quad A)": {
-        "risk": ["Adverse life events", "Risk behavior & ineffective coping", "Sport-specific stressors"],
-        "prot": []
-    },
-    "Marc (Quad B)": {
-        "risk": ["Chronic life Stress", "Sport-specific stressors"],
-        "prot": ["Feeling of competence"]
-    },
-    "Julian (Quad C)": {
-        "risk": ["Basic needs & career dissatisfaction", "Maladaptive personality & identity"],
-        "prot": []
-    },
-    "Sina (Quad D)": {
-        "risk": [],
-        "prot": ["Feeling of autonomy", "Protective behavior", "Feeling of competence"]
-    },
-    "Keine Auswahl / Reset": {"risk": [], "prot": []}
-}
+# --- 2. Mathematische Generierung des exakten Farbverlaufs (0 bis 100) ---
+x_grid = [x for x in range(0, 101, 2)]
+y_grid = [y for y in range(0, 101, 2)]
+Z = []
 
-# Callback-Funktion: Aktualisiert die Checkboxen, wenn ein Athlet geklickt wird
-def on_athlete_change():
-    selected = st.session_state.athlete
-    profile = athlete_profiles[selected]
-    for f in all_risks:
-        st.session_state[f] = (f in profile["risk"])
-    for f in all_prots:
-        st.session_state[f] = (f in profile["prot"])
+for y in y_grid:
+    row = []
+    for x in x_grid:
+        if x <= 50:
+            pct = (50 - x) / 50
+            val = 0.5 + pct * 0.45
+            if y > 50:
+                val += ((y - 50) / 50) * pct * 0.15
+            val = min(1.0, val)
+        else:
+            mask_x = max(0, 1 - (abs(x - 90) / 35)**2)
+            mask_y = max(0, 1 - (abs(y - 50) / 31)**2)
+            intensity = mask_x * mask_y * 0.42
+            val = 0.5 - intensity
+        
+        if y > 85:
+            top_factor = (y - 85) / 15
+            top_factor = min(1.0, max(0.0, top_factor))
+            
+            if x > 50:
+                val = 0.5 * (1 - top_factor) + 1.0 * top_factor
+            else:
+                val = val * (1 - top_factor) + 1.0 * top_factor
+            
+        row.append(val)
+    Z.append(row)
 
-# --- Layout Start ---
-st.title("Methodik: Performance vs Pressure Modell")
+custom_colorscale = [
+    [0.0, '#7bcd7b'],  # Vibrant Green
+    [0.5, '#EAEAEA'],  # Neutral Light Gray/White
+    [1.0, '#E05638']   # Warm Red/Orange
+]
 
-# 1. Sprung-Ergebnisse
-st.write("### 1. Sprung-Ergebnisse (Wettkampf)")
-c1, c2, c3 = st.columns(3)
-run1 = c1.radio("Run 1", ["Ausstehend", "Gestanden 👍", "Nicht gestanden 👎"])
-run2 = c2.radio("Run 2", ["Ausstehend", "Gestanden 👍", "Nicht gestanden 👎"])
-run3 = c3.radio("Run 3", ["Ausstehend", "Gestanden 👍", "Nicht gestanden 👎"])
+# --- 3. Grafik zusammenbauen ---
+fig = go.Figure()
 
-st.markdown("---")
-st.write("### 2. Athleten & Einflussfaktoren (Küttel & Larsen, 2020)")
+# Hintergrund-Verlauf exakt auf den Bereich 0-100 begrenzt
+fig.add_trace(go.Heatmap(
+    x=x_grid, y=y_grid, z=Z,
+    colorscale=custom_colorscale,
+    showscale=False,
+    hoverinfo='skip'
+))
 
-# Athleten-Auswahl (Triggert die Checkboxen automatisch)
-st.radio("Wähle einen Athleten, um sein Profil zu laden:", 
-         list(athlete_profiles.keys()), 
-         key="athlete", 
-         horizontal=True, 
-         on_change=on_athlete_change)
+# Der große, zentrierte Farbstreifen unter dem Modell (Y = -24 bis -18, X = 25 bis 75)
+bar_x = [x for x in range(25, 76, 1)]
+bar_y = [y for y in range(-24, -17, 1)]
+bar_Z = [[(x - 25) / 50 for x in bar_x] for y in bar_y]
 
-# 2. Layout: 3 Spalten
-col_risk, col_graph, col_prot = st.columns([1.2, 2.5, 1.2])
+fig.add_trace(go.Heatmap(
+    x=bar_x, y=bar_y, z=bar_Z,
+    colorscale=custom_colorscale,
+    showscale=False,
+    hoverinfo='skip'
+))
 
-active_risk = 0
-active_prot = 0
+# Gekürzte Achsenlinien
+fig.add_shape(type="line", x0=3, y0=50, x1=97, y1=50, line=dict(color="black", width=4))   # Horizontale Achse gekürzt
+fig.add_shape(type="line", x0=50, y0=3, x1=50, y1=97, line=dict(color="black", width=4))  # Vertikale Achse gekürzt
 
-# Linke Spalte: Risikofaktoren
-with col_risk:
-    st.markdown("<h5 style='color: #d62728;'>🚨 Risk Factors</h5>", unsafe_allow_html=True)
-    st.write("**Sport-environmental**")
-    for f in risk_env:
-        if st.checkbox(f"🔴 {f}", key=f): active_risk += 1
-    st.write("**Personal**")
-    for f in risk_pers:
-        if st.checkbox(f"🔴 {f}", key=f): active_risk += 1
+# Pfeilspitzen exakt auf den Außenkanten verankert
+arrow_style = dict(xref="x", yref="y", axref="x", ayref="y", showarrow=True, arrowhead=2, arrowsize=1, arrowwidth=4, arrowcolor="black", standoff=0)
+fig.add_annotation(x=100, y=50, ax=50, ay=50, **arrow_style)  # Spitze Rechts
+fig.add_annotation(x=0, y=50, ax=50, ay=50, **arrow_style)    # Spitze Links
+fig.add_annotation(x=50, y=100, ax=50, ay=50, **arrow_style)   # Spitze Oben
+fig.add_annotation(x=50, y=0, ax=50, ay=50, **arrow_style)     # Spitze Unten
 
-# Rechte Spalte: Schutzfaktoren
-with col_prot:
-    st.markdown("<h5 style='color: #2ca02c;'>🛡️ Protective Factors</h5>", unsafe_allow_html=True)
-    st.write("**Sport-environmental**")
-    for f in prot_env:
-        if st.checkbox(f"🟢 {f}", key=f): active_prot += 1
-    st.write("**Personal**")
-    for f in prot_pers:
-        if st.checkbox(f"🟢 {f}", key=f): active_prot += 1
+# Die 7 Athleten-Boxen im Vordergrund
+fig.add_trace(go.Scatter(
+    x=athletes['X'], y=athletes['Y'],
+    mode='markers+text',
+    marker=dict(symbol='square', size=52, color='#5492b3', line=dict(width=1, color='#1b3f54')),
+    text=athletes['Text'], textposition="middle center",
+    textfont=dict(color="white", size=11, family="Arial", weight="bold"),
+    hoverinfo='text', hovertext=athletes['HoverLabel'], customdata=athletes['Id']
+))
 
-# --- 3. Logik für Hintergrund und Punkte ---
-net_score = active_prot - active_risk
+# Die interaktiven Achsentexte hinzufügen
+fig.add_trace(go.Scatter(
+    x=axes['X'], y=axes['Y'],
+    mode='text', text=axes['Text'],
+    textfont=dict(size=18, color="black", family="Arial", weight="bold"),
+    hoverinfo='text', textposition="middle center", hovertext=axes['HoverLabel'], customdata=axes['Id']
+))
 
-# Hintergrundfarbe berechnen
-if net_score > 0:
-    alpha = min(0.35, (net_score / 6) * 0.35) 
-    bg_color = f"rgba(44, 160, 44, {alpha})"
-elif net_score < 0:
-    alpha = min(0.35, (abs(net_score) / 8) * 0.35)
-    bg_color = f"rgba(214, 39, 40, {alpha})"
+# Die interaktiven Legenden-Texte links und rechts neben dem Balken hinzufügen
+fig.add_trace(go.Scatter(
+    x=legend_texts['X'], y=legend_texts['Y'],
+    mode='text', text=legend_texts['Text'],
+    textfont=dict(size=15, color="#333333", family="Arial", weight="bold"),
+    hoverinfo='text', textposition="middle center", hovertext=legend_texts['HoverLabel'], customdata=legend_texts['Id']
+))
+
+# Layout-Einstellungen
+fig.update_layout(
+    clickmode='event+select',
+    xaxis=dict(visible=False, range=[-25, 125], fixedrange=True), 
+    yaxis=dict(visible=False, range=[-32, 118], fixedrange=True),
+    paper_bgcolor='rgba(0,0,0,0)', 
+    showlegend=False,
+    height=820,
+    margin=dict(l=10, r=10, t=10, b=10)
+)
+
+# Render
+selected_point = st.plotly_chart(fig, use_container_width=True, on_select="rerun", config={'displayModeBar': False, 'doubleClick': False})
+
+# Interaktive Auswertung unter dem Modell
+if selected_point and "selection" in selected_point and selected_point["selection"]["points"]:
+    clicked_id = selected_point["selection"]["points"][0]["customdata"]
+    current_selection = unified_data[unified_data['Id'] == clicked_id].iloc[0]
+    st.markdown(f"### {current_selection['Titel']}")
+    st.info(current_selection['Beschreibung'])
 else:
-    bg_color = "rgba(0,0,0,0)"
-
-# Dynamischer Startpunkt (t1) des Wettkämpfers anpassen
-# Start Performance = 50 (Exakt in der Mitte), Start Pressure = 70 (hohe Körperspannung)
-base_perf = max(10, min(90, 50 + (active_prot * 3) - (active_risk * 3)))
-base_pres = max(10, min(90, 70 - (active_prot * 3) + (active_risk * 3)))
-
-def get_color(perf, pres):
-    if pres > 50 and perf < 50: return "red"
-    if pres > 50 and perf >= 50: return "#FFD700"
-    if pres <= 50 and perf < 50: return "orange"
-    return "lightgreen"
-
-pts = [{"t": "t1", "perf": base_perf, "pres": base_pres, "color": get_color(base_perf, base_pres)}]
-
-# Runs berechnen
-if run1 != "Ausstehend":
-    pts.append({"t": "t2", "perf": base_perf + (10 if run1 == "Gestanden 👍" else -15), 
-                "pres": base_pres + (-10 if run1 == "Gestanden 👍" else 15), "color": ""})
-    pts[-1]["color"] = get_color(pts[-1]["perf"], pts[-1]["pres"])
-
-    if run2 != "Ausstehend":
-        pts.append({"t": "t3", "perf": pts[-1]["perf"] + (10 if run2 == "Gestanden 👍" else -15), 
-                    "pres": pts[-1]["pres"] + (-10 if run2 == "Gestanden 👍" else 15), "color": ""})
-        pts[-1]["color"] = get_color(pts[-1]["perf"], pts[-1]["pres"])
-
-        if run3 != "Ausstehend":
-            pts.append({"t": "t4", "perf": pts[-1]["perf"] + (10 if run3 == "Gestanden 👍" else -15), 
-                        "pres": pts[-1]["pres"] + (-20 if run3 == "Gestanden 👍" else 15), "color": ""})
-            pts[-1]["color"] = get_color(pts[-1]["perf"], pts[-1]["pres"])
-
-# Begrenzung im Diagramm
-for p in pts:
-    p["perf"] = max(5, min(95, p["perf"]))
-    p["pres"] = max(5, min(95, p["pres"]))
-
-# --- 4. Athleten-Profile für das Chart formatieren ---
-def format_text(title, text, width=32):
-    wrapped = "<br>".join(textwrap.wrap(text, width=width))
-    return f"<b>{title}</b><br><br>{wrapped}"
-
-athletes_data = {
-    "Elena (Quad A)": {
-        "x": 35, "y": 65, "ax": -30, "ay": -30, "xanchor": "right", "yanchor": "bottom",
-        "text": format_text("Elena (Low Well-Being)", "Emotional überfordert. Hoher Druck führt zu technischem Versagen und massivem Verlust des Selbstvertrauens.")
-    },
-    "Marc (Quad B)": {
-        "x": 65, "y": 65, "ax": 30, "ay": -30, "xanchor": "left", "yanchor": "bottom",
-        "text": format_text("Marc (Low Well-Being)", "Nutzt hohen Druck als Treibstoff. Die toxische Anspannung verhindert jedoch ein dauerhaft stabiles Wohlbefinden.")
-    },
-    "Julian (Quad C)": {
-        "x": 35, "y": 35, "ax": -30, "ay": 30, "xanchor": "right", "yanchor": "top",
-        "text": format_text("Julian (Low Well-Being)", "Innere Gleichgültigkeit und Desinteresse. Resultiert in geringem Wohlbefinden, da jegliche Spannung fehlt.")
-    },
-    "Sina (Quad D)": {
-        "x": 65, "y": 35, "ax": 30, "ay": 30, "xanchor": "left", "yanchor": "top",
-        "text": format_text("Sina (High Well-Being)", "Innere Gelassenheit und starkes Vertrauen in die eigene Vorbereitung ermöglichen Spitzenleistung bei höchstem Wohlbefinden.")
-    }
-}
-
-# --- 5. Modell zeichnen ---
-with col_graph:
-    fig = go.Figure()
-    
-    # Schwarzes Achsenkreuz
-    fig.add_shape(type="line", x0=50, y0=-10, x1=50, y1=110, line=dict(color="black", width=4))
-    fig.add_shape(type="line", x0=-10, y0=50, x1=110, y1=50, line=dict(color="black", width=4))
-
-    # Wettkampf-Punkte zeichnen
-    for p in pts:
-        fig.add_trace(go.Scatter(
-            x=[p['perf']], y=[p['pres']], mode='markers+text',
-            marker=dict(size=22, color=p['color'], line=dict(width=2, color='black')),
-            text=[p['t']], textposition="top center",
-            hovertemplate=f"<b>Zeitpunkt {p['t']}</b><extra></extra>"
-        ))
-
-    # Skifahrer-Piktogramm und Textbox einblenden
-    if st.session_state.athlete != "Keine Auswahl / Reset":
-        ath = athletes_data[st.session_state.athlete]
-        # Das Skifahrer Emoji
-        fig.add_trace(go.Scatter(x=[ath['x']], y=[ath['y']], mode='text', text=["⛷️"], textfont=dict(size=45), hoverinfo='skip'))
-        # Die Sprechblase (dynamisch in die Raumecken verankert)
-        fig.add_annotation(
-            x=ath['x'], y=ath['y'], text=ath['text'], showarrow=True, arrowhead=2, arrowsize=1, arrowwidth=2,
-            ax=ath['ax'], ay=ath['ay'], xanchor=ath['xanchor'], yanchor=ath['yanchor'],
-            bgcolor="white", bordercolor="black", borderwidth=2, borderpad=10, 
-            font=dict(size=11, color="black"), align="left"
-        )
-
-    # Styling
-    label_style = dict(size=16, color="black", family="Arial")
-    fig.add_annotation(x=50, y=115, text="High Pressure", showarrow=False, font=label_style)
-    fig.add_annotation(x=50, y=-15, text="Low Pressure", showarrow=False, font=label_style)
-    fig.add_annotation(x=-25, y=50, text="Low Performance", showarrow=False, font=label_style)
-    fig.add_annotation(x=125, y=50, text="High Performance", showarrow=False, font=label_style)
-
-    fig.update_layout(
-        xaxis=dict(visible=False, range=[-40, 140]), 
-        yaxis=dict(visible=False, range=[-30, 130]),
-        plot_bgcolor=bg_color, 
-        paper_bgcolor="rgba(0,0,0,0)", 
-        showlegend=False, 
-        height=650, 
-        margin=dict(l=10, r=10, t=10, b=10)
-    )
-    
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    st.write("💡 *Tipp: Klicke auf eine blaue Athleten-Box, die Achsentexte oder die Well-Being-Labels, um die Definitionen einzublenden.*")
