@@ -5,7 +5,7 @@ import pandas as pd
 # Seiteneinstellungen
 st.set_page_config(page_title="Methodik: Performance vs Pressure", layout="wide")
 
-st.title("Performance vs Pressure Modell and its Influence on Well-Being")
+st.title("Performance vs Pressure and their Influence on Well-Being")
 st.write("Klicke auf eine Athleten-Box, eine Achsenbeschriftung oder den unteren Farbstreifen, um die Definitionen und Beispiele anzuzeigen.")
 
 # --- 1. Einheitliche Datenstruktur für interaktive Elemente ---
@@ -14,10 +14,10 @@ unified_data = pd.DataFrame({
     'Type': ['Athlete', 'Athlete', 'Athlete', 'Athlete', 'Athlete', 'Athlete', 'Athlete', 'Axis', 'Axis', 'Axis', 'Axis', 'LegendText', 'LegendText', 'LegendText', 'LegendText', 'LegendText'],
     'X': [5, 18, 89, 47, 79, 95, 70, 50, 50, -12, 112, 10, 90, 35, 50, 65], 
     'Y': [88, 15, 95, 55, 38, 57, 10, 105, -5, 50, 50, -21, -21, -21, -21, -21],
-    'Text': ['Sarah', 'Janis', 'Mathilde', 'Eva', 'Hans', 'Luca', 'Dario', 'High Pressure', 'Low Pressure', 'Low Performance', 'High Performance', 'High Well-Being', 'Low Well-Being', '', '', ''],
+    'Text': ['Jelena', 'Janis', 'Melea', 'Eva', 'Hans', 'Luca', 'Dario', 'High Pressure', 'Low Pressure', 'Low Performance', 'High Performance', 'High Well-Being', 'Low Well-Being', '', '', ''],
     'Farbe': ['black']*16, 
     'HoverLabel': [
-        'Sarah analysieren', 'Janis analysieren', 'Mathilde analysieren', 
+        'Jelena analysieren', 'Janis analysieren', 'Melea analysieren', 
         'Eva analysieren', 'Hans analysieren', 'Luca analysieren', 'Dario analysieren',
         'Definition: High Pressure', 'Definition: Low Pressure', 
         'Definition: Low Performance', 'Definition: High Performance',
@@ -25,7 +25,7 @@ unified_data = pd.DataFrame({
         'Details zu Well-Being', 'Details zu Well-Being', 'Details zu Well-Being'
     ],
     'Titel': [
-        "SARAH (QUADRANT A)", "JANIS (QUADRANT C)", "MATHILDE (QUADRANT B)", "EVA (MITTE / ZENTRUM)", "HANS (WOHLBEFINDENS-ZONE)", "LUCA (SWEET SPOT)", "DARIO (UNTEN RECHTS)",
+        "JELENA (QUADRANT A)", "JANIS (QUADRANT C)", "MELEA (QUADRANT B)", "EVA (MITTE / ZENTRUM)", "HANS (WOHLBEFINDENS-ZONE)", "LUCA (SWEET SPOT)", "DARIO (QUADRANT D)",
         "Dimension: High Pressure", "Dimension: Low Pressure", "Dimension: Low Performance", "Dimension: High Performance",
         "What is Well-Being?", "What is Well-Being?", "What is Well-Being?", "What is Well-Being?", "What is Well-Being?"
     ],
@@ -35,9 +35,9 @@ unified_data = pd.DataFrame({
     'Status': ["CHALLENGER", "ROOKIE", "WORLD CUP WINNER", "PRO ATHLETE", "PRO ATHLETE", "ELITE SQUAD", "NATIONAL TEAM", "", "", "", "", "", "", "", "", ""],
     
     'Beschreibung': [
-        "**Sarah (High Pressure / Low Performance):**\n\n* Sie erlebt mehrere Rückschläge in kurzer Zeit.\n* Materialprobleme und fehlende Resultate verstärken den Druck.\n* Sie fürchtet, aus dem Team zu fallen.\n* Sie fühlt sich „verflucht“ und beginnt zu grübeln.\n* Die hohe interne Anspannung blockiert ihre Leistung.",
+        "**Jelena (High Pressure / Low Performance):**\n\n* Sie erlebt mehrere Rückschläge in kurzer Zeit.\n* Materialprobleme und fehlende Resultate verstärken den Druck.\n* Sie fürchtet, aus dem Team zu fallen.\n* Sie fühlt sich „verflucht“ und beginnt zu grübeln.\n* Die hohe interne Anspannung blockiert ihre Leistung.",
         "**Janis (Low Pressure / Low Performance):**\n\n* Er geht mit wenig Druck in den Wettkampf.\n* Unterschätzt die Situation -> „ich packe das easy“.\n* Das Warm-up wurde nicht ernst genommen.\n* Dadurch fehlt ihm die letzte Schärfe und Readiness.",
-        "**Mathilde (High Pressure / High Performance):**\n\n* Sie performt auf sehr hohem Niveau in Top-Events wie den X Games.\n* Der Konkurrenzdruck und die Bedeutung der Events sind sehr hoch.\n* Sie kann unter diesem Druck Leistung abrufen.\n* Der dichte Kalender lässt aber wenig Raum für Erholung.\n* Über die Zeit akkumuliert sich der Stress -> Es kommt zu einem mentalen Breakdown.",
+        "**Melea (High Pressure / High Performance):**\n\n* Sie performt auf sehr hohem Niveau in Top-Events wie den X Games.\n* Der Konkurrenzdruck und die Bedeutung der Events sind sehr hoch.\n* Sie kann unter diesem Druck Leistung abrufen.\n* Der dichte Kalender lässt aber wenig Raum für Erholung.\n* Über die Zeit akkumuliert sich der Stress -> Es kommt zu einem mentalen Breakdown.",
         "**Eva (Mitte / Zentrum):**\n\n* Sie hat realistische Erwartungen an ihren Wettkampf.\n* Sie orientiert sich an ihrer Form der letzten Wochen.\n* Sie spürt Nervosität, bleibt aber handlungsfähig -> notwendiger Druck.\n* Sie folgt ihrem Plan, ohne etwas erzwingen zu wollen.\n* Ihre Eltern unterstützen sie optimal.\n* Keine anstehende Selektion in der Nähe.",
         "**Hans (Flow-Zone):** Erlebt maximale Spielfreude und intrinsische Motivation. Hohes Wohlbefinden im geschützten grünen Bereich ermöglicht exzellente, stabile Leistungen.",
         "**Luca (Sweet Spot):**\n\n* Normaler und notwendiger Druck beim Wettkampf vorhanden.\n* Die Vorbereitung ist gut gelaufen -> starkes Selbstvertrauen.\n* Er ist rein intrinsisch motiviert.\n* Sein Platz im Nationalteam ist langfristig gesichert.\n* Seine Eltern unterstützen ihn vollumfänglich.",
@@ -195,7 +195,6 @@ def show_wellbeing_profile(profile):
         </style>
         """, unsafe_allow_html=True)
         
-    # Basis HTML: Importance, Balance & Selbstwirksamkeit werden IMMER geladen
     html_content = """
         <div class="wb-hero">
             <div class="wb-red-title">What is Well-Being?</div>
@@ -216,7 +215,6 @@ def show_wellbeing_profile(profile):
         <div style="text-align: center; font-size: 32px; font-weight: bold; margin-top: 35px; margin-bottom: 25px;">&#10132; Eudamonic</div>
     """
     
-    # BEDINGUNG: "Symptoms of Low Well-Being" wird ausgeblendet, WENN "High Well-Being" geklickt wurde
     if profile['Text'] != 'High Well-Being':
         html_content += """
         <hr style="margin-top:30px; margin-bottom:20px; border-top: 1px solid #ccc;">
@@ -302,7 +300,7 @@ fig.add_trace(go.Scatter(
 # UNSICHTBARE KLICK-BEREICHE FÜR DEN FARBSTREIFEN
 fig.add_trace(go.Scatter(
     x=legend_bar_clickers['X'], y=legend_bar_clickers['Y'], mode='markers',
-    marker=dict(size=45, opacity=0), # Völlig transparent, aber anklickbar!
+    marker=dict(size=45, opacity=0), 
     hoverinfo='text', hovertext=legend_bar_clickers['HoverLabel'], customdata=legend_bar_clickers['Id']
 ))
 
@@ -315,15 +313,12 @@ if selected_point and "selection" in selected_point and selected_point["selectio
     clicked_id = selected_point["selection"]["points"][0]["customdata"]
     current_selection = unified_data[unified_data['Id'] == clicked_id].iloc[0]
     
-    # 1. Athleten -> Athleten-Popup
     if current_selection['Type'] == 'Athlete':
         show_athlete_profile(current_selection)
     
-    # 2. Achsen -> Achsen-Popup
     elif current_selection['Type'] == 'Axis':
         show_axis_profile(current_selection)
         
-    # 3. Well-Being Legende & Farbstreifen -> DYNAMISCHES Well-Being Popup
     elif current_selection['Type'] == 'LegendText':
         show_wellbeing_profile(current_selection)
 else:
