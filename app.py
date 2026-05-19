@@ -5,7 +5,7 @@ import pandas as pd
 # Seiteneinstellungen
 st.set_page_config(page_title="Methodik: Performance vs Pressure", layout="wide")
 
-st.title("Performance vs Pressure and their Influence on Well-Being")
+st.title("Performance vs Pressure: Their influence on Well-Being")
 st.write("Klicke auf eine Athleten-Box, eine Achsenbeschriftung oder den unteren Farbstreifen, um die Definitionen und Beispiele anzuzeigen.")
 
 # --- 1. Einheitliche Datenstruktur für interaktive Elemente ---
